@@ -1,24 +1,8 @@
-
-
-using System.Reflection.PortableExecutable;
-
 namespace Day21;
 
 public class Solver(string input)
 {
     private readonly List<string> _codes = [.. input.Trim().Split("\n")];
-    // private readonly Dictionary<(char, char), List<string>> _numericPadPaths = new()
-    // {
-    //     [('7', '8')] = [">A"],
-    //     [('7', '9')] = [">>A"],
-    //     [('7', '4')] = ["v"],
-    //     [('7', '5')] = ["v>", ">v"],
-    //     [('7', '6')] = ["v>>", ">>v"],
-    //     [('7', '1')] = ["vv"],
-    //     [('7', '2')] = ["vv>"],
-    //     [('7', '3')] = ["vv>>"],
-    //     [('7', '0')] = ["vv>>"],
-    // };
     private static readonly Dictionary<char, List<(char, char)>> _numPad = new()
     {
         ['7'] = [('>', '8'), ('v', '4')],
@@ -53,7 +37,6 @@ public class Solver(string input)
         var memo = new Dictionary<(string, int), long>();
         return _codes.Select(code => GetMinSequence(code, 0, hiddenRobots, memo) * int.Parse(code[..^1])).Sum();
     }
-
     
     private long GetMinSequence(string code, int layer, int hiddenRobots, Dictionary<(string, int), long> memo)
     {
@@ -95,145 +78,7 @@ public class Solver(string input)
         }
 
         return res;
-
-        foreach (var (key, value) in _numPadPaths)
-        {
-            Console.WriteLine($"Paths from {key.Item1} to {key.Item2}: {string.Join(",", value)}");
-        }
-        return 3;
-        // var numSequences = GetShortestSequences(code, _numericPadPaths, false);
-
-        // return numSequences.Select(c => GetMinSequenceHelper(c, hiddenRobots)).Min();
     }
-
-    // private long GetMinSequenceHelper(string code, int layer)
-    // {
-    //     if (layer == 0)
-    //     {
-    //         return code.Length;
-    //     }
-
-    //     if (!_memo.TryGetValue((code, layer), out var res))
-    //     {
-    //         res = code.Split("A")
-    //             .Where(pc => !string.IsNullOrEmpty(pc))
-    //             .Select(pc => FindPaths
-    //     }
-        
-    //     return res;
-    // }
-
-    // private static List<string> GetShortestSequences(string code, Dictionary<(char, char), List<List<char>>> paths, bool useMemo)
-    // {
-
-
-    //     var queue = new PriorityQueue<(int Progress, char Pos, List<char> Sequence), int>();
-    //     int? minDist = null;
-
-    //     queue.Enqueue((0, 'A', []), 0);
-    //     var res = new List<string>();
-
-    //     while (queue.TryDequeue(out var node, out var pathLength))
-    //     {
-    //         var (progress, pos, seq) = node;
-    //         if (progress == code.Length)
-    //         {
-    //             minDist ??= pathLength;
-    //             res.Add(string.Join("", seq));
-    //             continue;
-    //         }
-
-    //         if (pathLength >= minDist)
-    //         {
-    //             continue;
-    //         }
-
-    //         var next = code[progress];
-    //         foreach (var subPath in paths[(pos, next)])
-    //         {
-    //             var newSeq = seq.Concat(subPath).Concat(['A']).ToList();
-    //             queue.Enqueue((progress + 1, next, newSeq), newSeq.Count);
-    //         }
-    //     }
-
-    //     return res;
-    // }
-
-
-    // private int GetMinSequence(string code, int hiddenRobots)
-    // {
-    //     var numSequences = GetShortestSequences(code, _numericPadPaths, false);
-
-    //     var x = new Dictionary<char, int>();
-
-    //     foreach (var key in _dirPad.Keys)
-    //     {
-    //         var oneSeq = GetShortestSequences(key.ToString(), _directionPadPaths, false).Distinct().ToList();
-    //         var minLength = oneSeq.Select(s => s.Length).Min();
-    //         oneSeq = oneSeq.Where(s => s.Length == minLength).ToList();
-
-    //         var twoSeq = oneSeq.SelectMany(ns => GetShortestSequences(ns, _directionPadPaths, true)).Distinct().ToList();
-    //         minLength = twoSeq.Select(s => s.Length).Min();
-
-    //         x[key] = minLength;
-    //     }
-
-    //     return numSequences.Select(ns => ns.Select(c => x[c]).Sum()).Min();
-
-    //     // // var robotOneSequences = numSequences.SelectMany(ns => GetShortestSequences(ns, _directionPadPaths, false)).Distinct().ToList();
-    //     // // var minLength = robotOneSequences.Select(s => s.Length).Min();
-    //     // // robotOneSequences = robotOneSequences.Where(s => s.Length == minLength)
-    //     // //     .OrderByDescending(s => s.Count(c => c == 'A'))
-    //     // //     .ThenByDescending(s => s.Count(c => c == '^'))
-    //     // //     .ThenByDescending(s => s.Count(c => c == '>'))
-    //     // //     .ThenByDescending(s => s.Count(c => c == 'v'))
-    //     // //     .ToList();
-        
-    //     // // ToList();
-
-    //     // var robotTwoSequences = robotOneSequences.SelectMany(ns => GetShortestSequences(ns, _directionPadPaths, true)).Distinct().ToList();
-    //     // minLength = robotTwoSequences.Select(s => s.Length).Min();
-
-    //     // return minLength;
-    // }
-
-    // private static List<string> GetShortestSequences(string code, Dictionary<(char, char), List<List<char>>> paths, bool earlyQuit)
-    // {
-    //     var queue = new PriorityQueue<(int Progress, char Pos, List<char> Sequence), int>();
-    //     int? minDist = null;
-
-    //     queue.Enqueue((0, 'A', []), 0);
-    //     var res = new List<string>();
-
-    //     while (queue.TryDequeue(out var node, out var pathLength))
-    //     {
-    //         var (progress, pos, seq) = node;
-    //         if (progress == code.Length)
-    //         {
-    //             minDist ??= pathLength;
-    //             res.Add(string.Join("", seq));
-    //             if (earlyQuit)
-    //             {
-    //                 break;
-    //             }
-    //             continue;
-    //         }
-
-    //         if (pathLength >= minDist)
-    //         {
-    //             continue;
-    //         }
-
-    //         var next = code[progress];
-    //         foreach (var subPath in paths[(pos, next)])
-    //         {
-    //             var newSeq = seq.Concat(subPath).Concat(['A']).ToList();
-    //             queue.Enqueue((progress + 1, next, newSeq), newSeq.Count);
-    //         }
-    //     }
-
-    //     return res;
-    // }
 
     private static Dictionary<(char, char), List<string>> PrecomputePaths(Dictionary<char, List<(char, char)>> pad)
     {
@@ -301,64 +146,4 @@ public class Solver(string input)
 
         return paths;
     }
-    // private static Dictionary<(char, char), List<List<char>>> PrecomputePaths(Dictionary<char, List<(char, char)>> pad)
-    // {
-    //     var paths = new Dictionary<(char, char), List<List<char>>>();
-
-    //     var elems = pad.Keys.ToList();
-
-    //     foreach (var start in elems)
-    //     {
-    //         foreach (var end in elems)
-    //         {
-    //             paths[(start, end)] = [];
-    //         }
-    //         paths[(start, start)].Add([]);
-    //     }
-
-    //     for (var i = 0; i < elems.Count; i++)
-    //     {
-    //         var start = elems[i];
-    //         for (var j = i + 1; j < elems.Count; j++)
-    //         {
-    //             var end = elems[j];
-    //             int? dist = null;
-
-    //             var pathsFromStart = new Queue<(char Pos, List<char> Path)>();
-    //             pathsFromStart.Enqueue((start, []));
-
-    //             while (pathsFromStart.TryDequeue(out var node))
-    //             {
-    //                 var (pos, path) = node;
-
-    //                 if (pos == end)
-    //                 {
-    //                     dist ??= path.Count;
-    //                     paths[(start, end)].Add(path);
-    //                     paths[(end, start)].Add(path.Select(c => c switch
-    //                     {
-    //                         '>' => '<',
-    //                         'v' => '^',
-    //                         '<' => '>',
-    //                         '^' => 'v',
-    //                         _ => throw new Exception()
-    //                     }).Reverse().ToList());
-    //                 }
-
-    //                 if (path.Count >= dist)
-    //                 {
-    //                     continue;
-    //                 }
-
-    //                 foreach (var (dir, next) in pad[pos])
-    //                 {
-    //                     pathsFromStart.Enqueue((next, [..path.Concat([dir])]));
-    //                 }
-    //             }
-
-    //         }
-    //     }
-
-    //     return paths;
-    // }
 }
